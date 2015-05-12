@@ -29,7 +29,8 @@ class Worker:
         return msg
     
     def iseof(self, chunks):
-        if ''.join(chunks)[-3:] == 'EOF':
+        msg = ''.join(chunks).strip()
+        if msg[-3:] == 'EOF':
             return True
         return False
         
