@@ -1,5 +1,6 @@
 from wendy import Wendy
 from distvector import DVWorker
+from logger import logger
 
 # example to get distance vector working:
 def start():
