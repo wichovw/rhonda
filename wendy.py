@@ -23,16 +23,16 @@ class Worker:
                 raise RuntimeError("Socket connection broken")
             chunks.append(chunk)
             bytes_rcvd += len(chunk)
-            if self.iseof(chunks):
+            msg = self.iseof(chunks)
+            if len(msg):
                 break
-        msg = ''.join(chunks)
         return msg
     
     def iseof(self, chunks):
         msg = ''.join(chunks).strip()
-        if msg[-3:] == 'EOF':
-            return True
-        return False
+        if '~~' in msg:
+            return msg[:msg.find('~~')]
+        return []
         
     
     def start(self):
