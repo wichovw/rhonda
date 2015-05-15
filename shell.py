@@ -10,7 +10,7 @@ def start():
     server.listen()
 
 if __name__ == '__main__':
-    from prompt_toolkit.contrib.shortcuts import get_input
+    from prompt_toolkit.shortcuts import get_input
     import threading
 
     #Welcome message
@@ -34,4 +34,4 @@ if __name__ == '__main__':
                 served.start()
         else:
             print("You can only start the router once.");
-    print("Good bye! — Rhonda")
+    print("Good bye! - Rhonda")

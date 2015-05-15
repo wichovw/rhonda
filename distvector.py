@@ -1,4 +1,5 @@
 from wendy import Worker
+from logger import logger
 
 config_file = [['A', '192.168.1.1', 5],
                ['B', '192.168.1.2', 8]]
@@ -24,8 +25,8 @@ class DVWorker(Worker):
         super().__init__(sckt, address)
     
     def start(self):
-        print('Connected by:', self.address)
+        logger.info('Connected by: %s' % self.address[0])
         while True:
             data = self.recv()
-            print('Received cuz yolo %d bytes' % len(data))
+            logger.debug('Received cuz yolo %d bytes' % len(data))
             self.send(data)

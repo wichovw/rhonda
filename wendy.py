@@ -1,4 +1,5 @@
 import socket, threading
+from logger import logger
 
 class Worker:
     
@@ -37,10 +38,10 @@ class Worker:
     
     def start(self):
         # this method should be overriden
-        print('Connected by:', self.address)
+        logger.info('Connected by: %s' % self.address[0])
         while True:
             data = self.recv()
-            print('Received %d bytes' % len(data))
+            logger.debug('Received %d bytes' % len(data))
             self.send(data)
         
 class Wendy:
@@ -50,10 +51,14 @@ class Wendy:
     def __init__(self, port=9080, local=False):
         self.serversocket = socket.socket(socket.AF_INET,
                                           socket.SOCK_STREAM)
+        host = ''
         if local:
             self.serversocket.bind(('localhost', port))
+            host = 'localhost'
         else:
             self.serversocket.bind((socket.gethostname(), port))
+            host = socket.gethostbyname(socket.gethostname())
+        logger.info('Server binded to %s:%s' % (host, port))
         
     def listen(self, backlog=5):
         self.serversocket.listen(backlog)
@@ -62,6 +67,6 @@ class Wendy:
             # blocking line:
             client = self.serversocket.accept()
             worker = self.worker_class(*client)
-            thrd = threading.Thread(name='Thread-'+str(i), target=worker.start)
+            thrd = threading.Thread(name='Worker-'+str(i), target=worker.start)
             thrd.start()
             i += 1
