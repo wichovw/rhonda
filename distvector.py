@@ -73,15 +73,42 @@ class DistVector:
 
 class DVWorker(Worker):
     
-    def __init__(self, sckt, address):
+    def __init__(self, sckt, address,name,dvector):
         # init things
         retry = 3
+        data = ''
+        self.name=name
+        self.dvector = dvector
         super().__init__(sckt, address)
     
     def start(self):
         logger.info('Connected by: %s' % self.address[0])
-
+        thrd = threading.Thread(name='DVWorker-'+str(address), target=self.recv)
+        thrd.start()
         while True:
+            costs = self.dvector.get()
+            if(costs==None):
+              self.send("Type:KeepAlive~~")
+            else:
+              msg = ""
+              for nodes in costs:
+                msg+=":".join(nodes)
+                msg+="~"
+              msg+="~"
+              self.send(msg)
+            
+            if(self.data!=''):
+              self.retry=3
+              splitted = self.data.split("~")
+              type = splitted[1].split(":")[1]
+              if(type=="DV"):
+                nodes = []
+                for i in range(2,len(splitted)):
+                  node = splitted[i].split(":")
+                  nodes.push([node[0],int(node[1])])
+                self.dvector.update(self.name,nodes)
+              elif(type=="KeepAlive"):
+                retry=3
             data = self.recv()
             if not data:
                 self.send("Keep alive")
@@ -90,8 +117,8 @@ class DVWorker(Worker):
             if retry == 0:
                 exit()
             time.sleep(30) 
-
-       
+            
+            
 if __name__ == "__main__":
     print('Test')
     dvector = DistVector(config_file)
@@ -107,3 +134,17 @@ if __name__ == "__main__":
         print('Changes B')
         print(dvector.get('B'))
     
+    def recv(self):
+        chunks = []
+        bytes_rcvd = 0
+        while True:
+          chunk = self.socket.recv(1024).decode('ascii')
+          if chunk == '':
+              raise RuntimeError("Socket connection broken")
+          chunks.append(chunk)
+          bytes_rcvd += len(chunk)
+          msg = self.iseof(chunks)
+          if len(msg):
+              self.data = msg
+              msg = ''
+       
