@@ -47,6 +47,7 @@ class Worker:
 class Wendy:
     
     worker_class = Worker
+    kwargs = {}
     
     def __init__(self, port=9080, local=False):
         self.serversocket = socket.socket(socket.AF_INET,
@@ -66,7 +67,7 @@ class Wendy:
         while True:
             # blocking line:
             client = self.serversocket.accept()
-            worker = self.worker_class(*client)
+            worker = self.worker_class(*client, **self.kwargs)
             thrd = threading.Thread(name='Worker-'+str(i), target=worker.start)
             thrd.start()
             i += 1

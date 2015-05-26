@@ -1,10 +1,12 @@
 from wendy import Wendy
-from distvector import DVWorker
+from distvector import DVWorker, DistVector
 from logger import logger
 
 # example to get distance vector working:
 def start():
     server = Wendy()
+    server.worker_class = DVWorker
+    distvector = DistVector
     server.worker_class = DVWorker
     # this blocks
     server.listen()
