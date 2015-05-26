@@ -61,6 +61,7 @@ class DVWorker(Worker):
 						else:
 							retry-=1
 						if(retry==0):
+              thrd.join()
 							exit()
 						time.sleep(30) 
             
