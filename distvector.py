@@ -1,8 +1,8 @@
 from logger import logger
 import time
 
-config_file = [['a', '172.20.3.236', 3],
-               ['c', '172.20.2.183', 2]]
+config_file = [['f', '172.20.2.195', 3],
+               ['g', '172.20.6.32', 2]]
 INF = 99
 US = 'h'
 

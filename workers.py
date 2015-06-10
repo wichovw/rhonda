@@ -79,13 +79,12 @@ class ClientWorker(Worker):
             logger.error("Received msg wasn't Type:WELCOME, as protocol establish")
             exit()
         
-        dvector.connection_established(self.node_name, False)
+        self.dvector.connection_established(self.node_name, False)
             
 class ServerWorker(Worker):
     
     def __init__(self, sckt, address, dvector):
-        retry = 3
-        data = ''
+#        retry = 3
         self.dvector = dvector
         super().__init__(sckt, address)
     
@@ -104,8 +103,7 @@ class ServerWorker(Worker):
         answer = self.render({'from':self.dvector.name, 'type':'WELCOME'})
         self.send(answer)
         
-        dvector.connection_established(self.node_name, True)
-        
+        self.dvector.connection_established(self.node_name, True)
         
         
         while True:
@@ -120,23 +118,23 @@ class ServerWorker(Worker):
                 msg+="~"
                 self.send(msg)
             
-            if(self.data!=''):
-                self.retry=3
-                splitted = self.data.split("~")
-                type = splitted[1].split(":")[1]
-                if(type=="DV"):
-                    nodes = []
-                    for i in range(2,len(splitted)):
-                        node = splitted[i].split(":")
-                        nodes.push([node[0],int(node[1])])
-                    self.dvector.update(self.name,nodes)
-                elif(type=="KeepAlive"):
-                    retry=3
-            
-            else:
-                retry -= 1
-            if retry == 0:
-                exit()
+#            self.retry=3
+#            splitted = self.data.split("~")
+#            type = splitted[1].split(":")[1]
+#            if(type=="DV"):
+#                nodes = []
+#                for i in range(2,len(splitted)):
+#                    node = splitted[i].split(":")
+#                    nodes.push([node[0],int(node[1])])
+#                self.dvector.update(self.name,nodes)
+#            elif(type=="KeepAlive"):
+#                retry=3
+#            
+#            else:
+#                retry -= 1
+#            if retry == 0:
+#                exit()
+
             time.sleep(30) 
             
 #    def recv(self):
