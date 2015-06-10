@@ -41,7 +41,7 @@ class Worker:
         lines = msg.split('~')
         message = {}
         for line in lines:
-            term, desc = msg.split(':', maxsplit=1)
+            term, desc = line.split(':', maxsplit=1)
             message[term.lower()] = desc
         return message
     
@@ -104,40 +104,40 @@ class ServerWorker(Worker):
         answer = self.render({'from':self.dvector.name, 'type':'WELCOME'})
         self.send(answer)
         
-        # NOTIFY DISTVECTOR ABOUT CONNECTION ESTABLISHED
+        dvector.connection_established(self.node_name, True)
         
         
         
-#        while True:
-#            costs = self.dvector.get()
-#            if(costs==None):
-#                self.send("Type:KeepAlive~~")
-#            else:
-#                msg = ""
-#                for nodes in costs:
-#                    msg+=":".join(nodes)
-#                    msg+="~"
-#                msg+="~"
-#                self.send(msg)
-#            
-#            if(self.data!=''):
-#                self.retry=3
-#                splitted = self.data.split("~")
-#                type = splitted[1].split(":")[1]
-#                if(type=="DV"):
-#                    nodes = []
-#                    for i in range(2,len(splitted)):
-#                        node = splitted[i].split(":")
-#                        nodes.push([node[0],int(node[1])])
-#                    self.dvector.update(self.name,nodes)
-#                elif(type=="KeepAlive"):
-#                    retry=3
-#            
-#            else:
-#                retry -= 1
-#            if retry == 0:
-#                exit()
-#            time.sleep(30) 
+        while True:
+            costs = self.dvector.get()
+            if(costs==None):
+                self.send("Type:KeepAlive~~")
+            else:
+                msg = ""
+                for nodes in costs:
+                    msg+=":".join(nodes)
+                    msg+="~"
+                msg+="~"
+                self.send(msg)
+            
+            if(self.data!=''):
+                self.retry=3
+                splitted = self.data.split("~")
+                type = splitted[1].split(":")[1]
+                if(type=="DV"):
+                    nodes = []
+                    for i in range(2,len(splitted)):
+                        node = splitted[i].split(":")
+                        nodes.push([node[0],int(node[1])])
+                    self.dvector.update(self.name,nodes)
+                elif(type=="KeepAlive"):
+                    retry=3
+            
+            else:
+                retry -= 1
+            if retry == 0:
+                exit()
+            time.sleep(30) 
             
 #    def recv(self):
 #        chunks = []

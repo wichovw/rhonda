@@ -1,6 +1,8 @@
 from logger import logger
 
 def start():
+    logger.info('START')
+    
     from distvector import DistVector, config_file
     import socket, threading
     from workers import ClientWorker
