@@ -111,12 +111,12 @@ class DVWorker(Worker):
               elif(type=="KeepAlive"):
                 retry=3
               
-						else:
-							retry-=1
-						if(retry==0):
+            else:
+              retry-=1
+            if(retry==0):
               thrd.join()
-							exit()
-						time.sleep(30) 
+              exit()
+            time.sleep(30) 
             
             
     def recv(self):
