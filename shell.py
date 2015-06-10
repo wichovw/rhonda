@@ -1,19 +1,44 @@
 from logger import logger
 
 def start():
-    from distvector import DistVector
+    from distvector import DistVector, config_file
+    import socket, threading
+    from workers import ClientWorker
+    from wendy import DVWendy
     
-    distvector = DistVector()
+    dvector = DistVector(config_file)
+    
+    def action(port, dvector):
+        while True:
+            try:
+                sock = socket.create_connection(
+                    (dvector.nodes[node].address, 1980),
+                    socket.getdefaulttimeout(),
+                    (socket.gethostname(), port)
+                )
+                worker = ClientWorker(sock, dvector.nodes[node].address, dvector)
+                worker.start()
+            except:
+                continue
+    
+    port = 1234
+    for node in dvector.nodes:
+        t = threading.Thread(target=action, args=(port, dvector))
+        t.daemon = True
+        t.start()
+        port += 1
+        
+    
     # init client workers
     # init wendy
     # init forwarding wendy
     
-#    server = Wendy()
+    server = DVWendy(dvector)
 #    server.worker_class = DVWorker
 #    distvector = DistVector
 #    server.worker_class = DVWorker
-#    # this blocks
-#    server.listen()
+    # this blocks
+    server.listen()
 
 if __name__ == '__main__':
     from prompt_toolkit.shortcuts import get_input

@@ -1,10 +1,10 @@
 from logger import logger
 import time
 
-config_file = [['A', '192.168.1.1', 5],
-               ['B', '192.168.1.2', 8]]
+config_file = [['a', '172.20.3.236', 3],
+               ['c', '172.20.2.183', 2]]
 INF = 99
-US = 'C'
+US = 'h'
 
 class Node:
     

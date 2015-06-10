@@ -43,7 +43,7 @@ class DVWendy(Wendy):
         super().__init__(port=port, **kwargs)
         
     def create_worker(self, client, name):
-        worker = ServerWorker(*client, distvector=self.dv)
+        worker = ServerWorker(*client, dvector=self.dv)
         thrd = threading.Thread(name='Server-'+name, target=worker.start)
         thrd.start()
         return worker

@@ -46,10 +46,10 @@ class Worker:
         return message
     
     def render(self, message):
-        from = message.get('from', None)
+        from_ = message.get('from', None)
         type = message.get('type', None)
-        if from and type:
-            msg = '~'.join(['From:%s'%from, 'Type:%s'%type])
+        if from_ and type:
+            msg = '~'.join(['From:%s'%from_, 'Type:%s'%type])
             return '%s~~' % msg
     
     def start(self):
@@ -70,6 +70,8 @@ class ClientWorker(Worker):
         logger.info('Connected as client to: %s' % self.address[0])
         self.send(self.render({'from':self.dvector.name, 'type':'HELLO'}))
         msg = self.parse(self.recv())
+        self.node_name = msg.get('from', None)
+        msg_type = msg.get('type', None)
         if not self.node_name or not msg_type:
             logger.error("Received msg coudn't be parsed")
             exit()
@@ -77,8 +79,7 @@ class ClientWorker(Worker):
             logger.error("Received msg wasn't Type:WELCOME, as protocol establish")
             exit()
         
-        self.name = 
-        dvector.connection_established
+        dvector.connection_established(self.node_name)
             
 class ServerWorker(Worker):
     
