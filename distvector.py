@@ -76,58 +76,6 @@ class DistVector:
         for name, node in self.nodes.items():
             node.updates.append(updates)
             
-
-    def get(self, name):
-        if len(self.nodes[name].updates):
-            return self.nodes[name].updates.pop(0)
-        return None
-
-class DVWorker(Worker):
-    
-    def __init__(self, sckt, address, dvector):
-        # init things
-        retry = 3
-        data = ''
-        self.name=name
-        self.dvector = dvector
-        super().__init__(sckt, address)
-    
-    def start(self):
-        logger.info('Connected by: %s' % self.address[0])
-        thrd = threading.Thread(name='DVWorker-'+str(address), target=self.recv)
-        thrd.start()
-        while True:
-            costs = self.dvector.get()
-            if(costs==None):
-                self.send("Type:KeepAlive~~")
-            else:
-                msg = ""
-                for nodes in costs:
-                    msg+=":".join(nodes)
-                    msg+="~"
-                msg+="~"
-                self.send(msg)
-            
-            if(self.data!=''):
-              self.retry=3
-              splitted = self.data.split("~")
-              type = splitted[1].split(":")[1]
-              if(type=="DV"):
-                nodes = []
-                for i in range(2,len(splitted)):
-                  node = splitted[i].split(":")
-                  nodes.push([node[0],int(node[1])])
-                self.dvector.update(self.name,nodes)
-              elif(type=="KeepAlive"):
-                retry=3
-              
-            else:
-              retry-=1
-            if(retry==0):
-              thrd.join()
-              exit()
-            time.sleep(30) 
-
     def connection_established(self, name, is_server):
         node = self.nodes[name]
         if is_server:
@@ -136,7 +84,6 @@ class DVWorker(Worker):
             node.client_conn = True
         if node.server_conn and node.client_conn:
             self.update(name, [(name, 0)])
-
             
     def connection_lost(self, name, is_server):
         node = self.nodes[name]
