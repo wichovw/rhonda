@@ -41,7 +41,7 @@ class Worker:
         lines = msg.split('~')
         message = {}
         for line in lines:
-            term, desc = msg.split(':')
+            term, desc = msg.split(':', maxsplit=1)
             message[term.lower()] = desc
         return message
     
@@ -67,7 +67,7 @@ class ClientWorker(Worker):
         super().__init__(sckt, address)
         
     def start(self):
-        logger.info('Connected as client to: %s' % self.address[0])
+        logger.info('Connected as client to: %s' % self.address)
         self.send(self.render({'from':self.dvector.name, 'type':'HELLO'}))
         msg = self.parse(self.recv())
         self.node_name = msg.get('from', None)
@@ -79,7 +79,7 @@ class ClientWorker(Worker):
             logger.error("Received msg wasn't Type:WELCOME, as protocol establish")
             exit()
         
-        dvector.connection_established(self.node_name)
+        dvector.connection_established(self.node_name, False)
             
 class ServerWorker(Worker):
     

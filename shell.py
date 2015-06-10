@@ -12,7 +12,7 @@ def start():
         while True:
             try:
                 sock = socket.create_connection(
-                    (dvector.nodes[node].address, 1980),
+                    (dvector.nodes[node].address, 9080),
                     socket.getdefaulttimeout(),
                     (socket.gethostname(), port)
                 )
