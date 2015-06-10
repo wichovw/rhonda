@@ -19,7 +19,7 @@ class ForwardClass(Worker,dvector):
         super().__init__(sckt, address)
     
     def start(self):
-        logger.info('Connected by: %s' % self.address[0])
+        
         thrd = threading.Thread(name='ForwardWorker-'+str(address), target=self.recv)
         thrd.start()
         while !self.close:
@@ -30,10 +30,20 @@ class ForwardClass(Worker,dvector):
             toAddr = splitted[1].split(":")[1]
             
             ipaddress = self.dvector.forwarding(toAddr)
-            s = socket.socket()
-            s.connect((ipaddress,1981))
-            s.send(msg)
-            s.close()
+            if(ipaddress!=None):
+              logger.info('Forwarding message to: %s' % ipaddress)
+              s = socket.socket()
+              s.connect((ipaddress,1981))
+              s.send(msg)
+              self.data = ''
+              s.close()
+            else:
+              logger.info('Receiving message from: %s' % splitted[0].split(":")[1])
+              s = socket.socket()
+              s.connect(("127.0.0.1",1992))
+              s.send(msg)
+              self.data = ''
+              s.close()
             self.close = True
             
             
@@ -53,20 +63,7 @@ class ForwardClass(Worker,dvector):
       
       def close(self):
         return self.close
-            
-if __name__ == "__main__":
-    print('Test')
-    dvector = DistVector(config_file)
-    print('Forwarding table')
-    print(dvector.matrix)
-    dvector.update('B', [['C', 8],['D', 4]])
-    print('Updated B')
-    print(dvector.matrix)
-    dvector.update('A', [['C', 5],['D', 3],['E', 4]])
-    print('Updated A')
-    print(dvector.matrix)
-    for _ in range(5):
-        print('Changes B')
-        print(dvector.get('B'))
-    
-       
+
+        
+        
+
